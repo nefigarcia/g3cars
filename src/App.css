@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+.div-center{
+  text-align: center;
+}
+.login-form,
+.signup-form{
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+  height: 100%;
+}
+.rdrMonthsVertical,
+.rdrMonthAndYearWrapper{
+  display: none;
+}
+ 
