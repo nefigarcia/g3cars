@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { Row,Button, Modal, ModalHeader, ModalBody, ModalFooter,   Form, FormFeedback, FormGroup, FormText,Label, Input, Alert, Col} from "reactstrap";
+import { InfoContext } from "../context";
+import moment from "moment/moment";
 
- export const Carros=()=>{
+ export const Carros=(props)=>{
+    const{dataCarros}=useContext(InfoContext)
+    const[formValue,setValue]=useState({frenta:"",fdevolucion:""})
     return(
-        <div className="row mt-5">
-            <span>buscando</span>
-             <Carrosres/>
+        <div className="div-center">
+         <div className="login-form">Vehiculos disponibles
+         {dataCarros.map(item=>{
+        return   <Carrosres fechas={props.fechas} key={item.Id} item={item} />
+         })}
         </div>
-           
+        </div>     
     );
  }
-export const Carrosres=()=>{
-    return(
-        <div className="col-10 col-lg-4 mx-auto mb-5">
-        <div className="card" style={{width:'18rem'}}>
+export const Carrosres=(props)=>{
+    return(   
+    
+         <div className="card shadow " >
             <img   className="card-img-top" />
             <div className="card-body">
                 <h3 className="card-title text-uppercase">
-                   Nombre
+                   {props.item.Marca}
                 </h3>
-                <p className="card-text"></p>
-                <p className="card-text fa fa-usd"></p><br></br>
+                <p className="card-text">{props.item.Modelo}</p>
+                <p className="card-text">Transmision {props.item.Transmision}</p>
+                <p className="card-text fa fa-usd">Puertas {props.item.Puertas}</p><br></br>
+                <Reservar fechas={props.fechas}  item={props.item}/>
                {/* <Link to='/Details' onClick={()=>value.handleDetail(id)} className="btn btn-primary">
                     Mas Info...
                 </Link>
@@ -28,6 +37,181 @@ export const Carrosres=()=>{
     </Link>*/}
             </div>
         </div>
-    </div>
+    );
+ }
+
+ export const Reservar=(props)=>{
+    const[loading,setLoading]=useState(false);
+    const[error,setError]=useState({mensajeError:"",erro:false})
+    const{mensajeError,erro}=error
+    
+    const[formValue,setValue]=useState({nombre:"",apellido:"",email:"",cel:"",frenta:"",fdevolucion:"",validate: {emailState: ''},submitted:false})
+    const{nombre,apellido,email,cel,validate,submitted}=formValue;  
+    const[validar,setValidar]=useState("")
+
+    const [modal, setModal] = useState(false);
+    const toggle = () => {
+        setModal(!modal);
+    }
+    
+    function handleSubmit(e){
+        e.preventDefault();
+        if(!(nombre && apellido && email && cel)){
+            return;
+        }
+        registrar(nombre,apellido,email,cel)
+        .then(setLoading(true));
+    }
+    function registrar(nombre,apellido,email,cel){
+        let dat={nombre:nombre,apellido:apellido,email:email,cel:cel,frenta:props.frenta,fdevolucion:props.fdevolucion,hrenta:props.hrenta,hdevolucion:props.hdevolucion,idcarro:props.item.Id};
+        dat.hrenta.toJSON=function(){ return moment(this).format(); }
+        dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
+        return fetch('http://localhost:3001/Reservacion',{
+       // return fetch('https://shielded-brushlands-89617.herokuapp.com/Reservacion',{
+               method:'POST',
+               mode:'cors',
+               body:JSON.stringify(dat),
+               headers:{'content-type':'application/json'},
+            })
+            .then(res=>{
+              if(res.ok){           console.log("res",res)    
+                setValue({submitted:true});
+                setLoading(false);
+              }
+            })
+            .catch(err=>{setError({erro:true,mensajeError:err})});
+    }  
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setValue((prevState) => {
+          return {
+            ...prevState,
+            [name]: value,
+          };
+        });
+      };      
+    function validateEmail(e) {
+        var valida=validar;
+        const emailRex =
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (emailRex.test(e.target.value)) {
+          valida = 'Exitoso';
+        } else {
+          valida = 'Peligroso';
+        }
+     
+        setValidar({valida});
+      }
+  const cambiarSubmitted=()=>{
+    setValue({submitted:false})
+}
+
+
+    return (
+      <div>
+        <Button color="danger" onClick={toggle}>
+          Reservar
+        </Button>
+        <Modal isOpen={modal} toggle={toggle} onClosed={()=>setValue({submitted:false})}>
+          <ModalHeader toggle={toggle}>Detalles de reserva</ModalHeader>
+          <ModalBody>
+
+          <div className=" div-center">
+    <h1><span className='text-center'>Registro</span></h1>
+    <Form className="border signup-form" onSubmit={(e) => handleSubmit(e)}>
+    <FormGroup>
+        <Input
+          type="name"
+          name="nombre"
+          id="nameId"
+          placeholder="Nombre"
+          value={nombre}
+          onChange={(e) => handleChange(e)}
+        />
+      </FormGroup> 
+      <FormGroup>
+        <Input
+          type="name"
+          name="apellido"
+          id="apellidosId"
+          placeholder="Apellido paterno"
+          value={apellido}
+          onChange={(e) => handleChange(e)}
+        />
+      </FormGroup> 
+      <FormGroup>
+        <Input
+          type="email"
+          name="email"
+          id="exampleEmail"
+          placeholder="email@ejemplo.com"
+          valid={validar === "Exitoso"}
+          invalid={validar === "Peligro"}
+          value={email}
+          onChange={(e) => {
+           validateEmail(e);
+            handleChange(e);
+          }}
+        />
+        <FormFeedback>
+          Uh oh! Algo esta mal en el formato de tu email. Corrigelo.
+        </FormFeedback>
+        <FormFeedback valid>
+          Correcto.
+        </FormFeedback>
+        <FormText>Tu usuario es tu email.</FormText>
+      </FormGroup>
+      <FormGroup>
+        <Input
+          type="text"
+          name="cel"
+          id="cel"
+          placeholder="cel."
+          value={cel}
+          onChange={(e) => handleChange(e)}
+        />
+      </FormGroup> 
+      <div className='d-grid'><button className="btn-md btn btn-primary">Aceptar</button></div>
+      {submitted &&
+<Alert color="success">Reserva exitosa!</Alert>}
+{erro &&
+<Alert color="danger">Error:{mensajeError}</Alert>}
+    </Form>
+
+    <div className="card shadow " >
+            <img   className="card-img-top" />
+            <div className="card-body">
+                <h3 className="card-title text-uppercase">
+                   {props.item.Marca}
+                </h3>
+                <p className="card-text">{props.item.Modelo}</p>
+                <p className="card-text">Transmision {props.item.Transmision}</p>
+                <p className="card-text fa fa-usd">Puertas {props.item.Puertas}</p>
+                <Row>
+                    <Col sm={4}><Label>Fecha renta:{moment(props.fechas.frenta).format('DD-MM-YYYY')}</Label></Col>
+                    <Col sm={4}><Label>Fecha devolucion:{moment(props.fechas.fdevolucion).format('DD-MM-YYYY')}</Label></Col>
+
+                </Row>
+                <Row>
+                    <Col sm={4}><Label>Hora renta:{moment(props.fechas.hrenta).format('hh:mm')}</Label></Col>
+                    <Col sm={4}><Label>Hora devolucion:{moment(props.fechas.hdevolucion).format('hh:mm')}</Label></Col>
+
+                </Row>
+
+            </div>
+        </div>
+
+</div>    
+          </ModalBody>
+         {/* <ModalFooter>
+            <Button color="primary" onClick={toggle}>
+              Do Something
+            </Button>{' '}
+            <Button color="secondary" onClick={toggle}>
+              Cancel
+            </Button>
+      </ModalFooter>*/}
+        </Modal>
+      </div>
     );
  }

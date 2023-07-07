@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useContext, useState, useEffect} from 'react'
 import {Col, Row,Form,FormFeedback,FormGroup,FormText, Label,Input,Button,Alert, Jumbotron} from 'reactstrap';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -7,6 +7,10 @@ import { addDays } from 'date-fns';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Carros } from './Carros';
+import moment from "moment/moment";
+import { getCarros } from '../Gets';
+import { InfoContext } from '../context';
+
 
 //import { LocalizationProvider } from '@mui/x-date-pickers';
 //import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -29,6 +33,52 @@ export const Buscar=()=>{
    const [dateRange, setDateRange] = useState([new Date(), addDays(new Date(),1)]);
   const [startDate, endDate] = dateRange;   
 
+  const [dateTime, setDateTime] = useState(new Date());
+  const [dateTime2, setDateTime2] = useState(new Date());
+
+  const[formValue,setValue]=useState({frenta:"",fdevolucion:""})
+  const{dataCarros,setDacarros}=useContext(InfoContext)    
+
+  useEffect(()=>{
+    registrar();
+    
+},[]); 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValue((prevState) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };      
+  function handleSubmit(e){
+    e.preventDefault();
+    if(!(startDate && endDate && dateTime && dateTime2)){
+        return;
+    }
+    registrar(startDate,endDate,dateTime,dateTime2)
+    .then(console.log("bien"));
+}
+const registrar=async()=>{
+    try {
+        let dat={frenta:startDate,fdevolucion:endDate,hrenta:dateTime,hdevolucion:dateTime2};
+    dat.hrenta.toJSON=function(){ return moment(this).format(); }
+    dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
+        let res=await fetch('http://localhost:3001/Disponibles',{
+            // return fetch('https://shielded-brushlands-89617.herokuapp.com/Dsponibles',{
+                    method:'POST',
+                    mode:'cors',
+                    body:JSON.stringify(dat),
+                    headers:{'content-type':'application/json'},
+                 })
+        .then((res)=>res.json())
+        if(res){setDacarros(res)}
+    }catch (error) {
+        console.log("err",error)
+    }
+
+}  
 const ocultarCalendario=item=>{
     setState([item.selection])
     if(item.selection.startDate!==item.selection.endDate){
@@ -41,10 +91,8 @@ const ocultarCalendario=item=>{
 }
     return(
      <div className='div-center'>
-            
-           <Form className='login-form border' onSubmit={(e) => this.handleSubmit(e)}>
+           <Form className='login-form border' onSubmit={(e) =>handleSubmit(e)}>
              <Row>
-             
              <FormGroup>
               <Label>Fecha Renta-Entrega</Label>
             </FormGroup>
@@ -65,12 +113,16 @@ const ocultarCalendario=item=>{
         <Label for="Nombre">
           Hora renta
         </Label>
-        <Input 
-          id="renta"
-          name="renta"
-          placeholder="Obligatorio"
-          type="time"
-        />
+        <DatePicker
+            selected={dateTime}
+            onChange={(date) => {
+                setDateTime(date )}}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={30}
+            timeCaption="Hora"
+            dateFormat="h:mm aa"
+    />
       </FormGroup>
     </Col>
     <Col md={5}>
@@ -78,12 +130,18 @@ const ocultarCalendario=item=>{
       <Label for="Nombre">
           Devolucion
         </Label>
-        <Input 
-          id="devolucion"
-          name="devolucion"
-          placeholder="Obligatorio"
-          type="time"
-        />
+        <DatePicker
+            selected={dateTime2}
+            onChange={(date) =>{
+
+                setDateTime2(date)}
+            } 
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={30}
+            timeCaption="Hora"
+            dateFormat="h:mm aa"
+    />
       </FormGroup>
     </Col>
   </Row>  
@@ -103,7 +161,7 @@ const ocultarCalendario=item=>{
         <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} />
       </DemoContainer>
     </LocalizationProvider>*/}
-         <Carros/>
+         <Carros fechas={{frenta:startDate,fdevolucion:endDate,hrenta:dateTime,hdevolucion:dateTime2}}/>
 
      </div>
     );

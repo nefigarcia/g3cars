@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import styled from 'styled-components';
 import React, { useState, useContext } from 'react';
 import {Link} from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
@@ -36,7 +35,7 @@ const NavApp = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
-  const [collapsedd, setCollapsedd] = useState(true);
+  const [collapsedd, setCollapsedd] = useState(false);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
 //const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoContext);
      
@@ -78,7 +77,9 @@ const NavApp = (props) => {
           </Nav>
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >
-             
+            <NavItem>
+                <Link><NavLink><i className='icon'><FaAddressBook/>Calendario</i></NavLink></Link>
+              </NavItem>
               <NavItem>
                 <Link><NavLink><i className='icon'><FaAddressBook/>Reportes</i></NavLink></Link>
               </NavItem>
