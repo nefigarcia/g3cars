@@ -78,7 +78,7 @@ const NavApp = (props) => {
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >
             <NavItem>
-                <Link><NavLink><i className='icon'><FaAddressBook/>Calendario</i></NavLink></Link>
+                <Link to={'/Calendario'}><NavLink><i className='icon'><FaAddressBook/>Calendario</i></NavLink></Link>
               </NavItem>
               <NavItem>
                 <Link><NavLink><i className='icon'><FaAddressBook/>Reportes</i></NavLink></Link>

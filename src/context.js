@@ -1,4 +1,5 @@
 import React,{useState,createContext} from "react";
+import { GetReservaciones } from "./Gets";
 
 export const InfoContext=createContext();
 export const InfoProvider=props=>{
@@ -6,6 +7,7 @@ export const InfoProvider=props=>{
     return(
         <InfoContext.Provider
         value={{
+            Reservaciones:GetReservaciones(),
             dataCarros,setDacarros
         }}
         >
