@@ -63,8 +63,10 @@ export const Buscar=()=>{
 const registrar=async()=>{
     try {
         let dat={frenta:startDate,fdevolucion:endDate,hrenta:dateTime,hdevolucion:dateTime2};
-    dat.hrenta.toJSON=function(){ return moment(this).format(); }
-    dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
+   
+   
+      dat.hrenta.toJSON=function(){ return moment(this).format(); }
+      dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
         let res=await fetch('http://localhost:3001/Disponibles',{
             // return fetch('https://shielded-brushlands-89617.herokuapp.com/Dsponibles',{
                     method:'POST',
