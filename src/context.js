@@ -4,11 +4,13 @@ import { GetReservaciones } from "./Gets";
 export const InfoContext=createContext();
 export const InfoProvider=props=>{
     const [dataCarros,setDacarros]=useState([])
+    const [reservaciones,setReservaciones]=useState([])
+
     return(
         <InfoContext.Provider
         value={{
-            Reservaciones:GetReservaciones(),
-            dataCarros,setDacarros
+            dataCarros,setDacarros,
+            reservaciones,setReservaciones
         }}
         >
             {props.children}
