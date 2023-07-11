@@ -19,17 +19,9 @@ const localizer = dateFnsLocalizer({
   locales
 });
 
-const myEventsList = [
-  { start: new Date(), end: new Date(), title: "special event" },
-  { start: new Date(), end: new Date(), title: "special " },
-  { start: new Date(), end: new Date(), title: "special " }
-
-
-];
-
 export default function Calendario() {
-    const{Reservaciones}=useContext(InfoContext)
-  const re=  Reservaciones.map(item=>{
+    const{reservaciones}=useContext(InfoContext)
+  const re=  reservaciones.map(item=>{
      return   {start:item.FechaRenta,end:item.FechaDevolucion,title:item.Modelo}
     });console.log("ma",re)
   return (

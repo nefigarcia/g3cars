@@ -1,11 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Row,Button, Modal, ModalHeader, ModalBody, ModalFooter,   Form, FormFeedback, FormGroup, FormText,Label, Input, Alert, Col} from "reactstrap";
 import { InfoContext } from "../context";
 import moment from "moment/moment";
+import { getReservaciones } from "../Gets";
 
  export const Carros=(props)=>{
-    const{dataCarros}=useContext(InfoContext)
+    const{dataCarros,setReservaciones}=useContext(InfoContext)
     const[formValue,setValue]=useState({frenta:"",fdevolucion:""})
+
+    useEffect(()=>{
+      getReservaciones()
+      .then(res=>{
+        setReservaciones(res)
+      })
+    },[])
     return(
         <div className="div-center">
          <div className="login-form">Vehiculos disponibles
@@ -20,7 +28,7 @@ export const Carrosres=(props)=>{
     return(   
     
          <div className="card shadow " >
-            <img   className="card-img-top" />
+            <img src={props.item.Foto} />
             <div className="card-body">
                 <h3 className="card-title text-uppercase">
                    {props.item.Marca}
@@ -48,6 +56,7 @@ export const Carrosres=(props)=>{
     const[formValue,setValue]=useState({nombre:"",apellido:"",email:"",cel:"",frenta:"",fdevolucion:"",validate: {emailState: ''},submitted:false})
     const{nombre,apellido,email,cel,validate,submitted}=formValue;  
     const[validar,setValidar]=useState("")
+    const{reservaciones,setReservaciones}=useContext(InfoContext)
 
     const [modal, setModal] = useState(false);
     const toggle = () => {
@@ -62,19 +71,23 @@ export const Carrosres=(props)=>{
         registrar(nombre,apellido,email,cel)
         .then(setLoading(true));
     }
-    function registrar(nombre,apellido,email,cel){
-        let dat={nombre:nombre,apellido:apellido,email:email,cel:cel,frenta:props.frenta,fdevolucion:props.fdevolucion,hrenta:props.hrenta,hdevolucion:props.hdevolucion,idcarro:props.item.Id};
-        dat.hrenta.toJSON=function(){ return moment(this).format(); }
-        dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
-        return fetch('http://localhost:3001/Reservacion',{
-       // return fetch('https://shielded-brushlands-89617.herokuapp.com/Reservacion',{
+  
+
+    function registrar(){
+        let dat={nombre:nombre,apellido:apellido,email:email,cel:cel,frenta:props.fechas.frenta,fdevolucion:props.fechas.fdevolucion,hrenta:props.fechas.hrenta,hdevolucion:props.fechas.hdevolucion,idcarro:props.item.Id};
+       dat.hrenta.toJSON=function(){ return moment(this).format(); }
+       dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
+      // return fetch('http://localhost:3001/Reservacion',{
+        return fetch('https://shielded-brushlands-89617.herokuapp.com/Reservacion',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),
                headers:{'content-type':'application/json'},
             })
-            .then(res=>{
-              if(res.ok){           console.log("res",res)    
+            .then(res=>{console.log("getRser",getReservaciones())
+              
+              if(res.ok){
+                getReservaciones().then(data=>setReservaciones(data))
                 setValue({submitted:true});
                 setLoading(false);
               }
@@ -179,7 +192,7 @@ export const Carrosres=(props)=>{
     </Form>
 
     <div className="card shadow " >
-            <img   className="card-img-top" />
+            <img src={props.item.Foto}  className="card-img-top" />
             <div className="card-body">
                 <h3 className="card-title text-uppercase">
                    {props.item.Marca}

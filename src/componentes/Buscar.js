@@ -1,14 +1,14 @@
 import React,{useContext, useState, useEffect} from 'react'
 import {Col, Row,Form,FormFeedback,FormGroup,FormText, Label,Input,Button,Alert, Jumbotron} from 'reactstrap';
-import 'react-date-range/dist/styles.css'; // main css file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import { DateRange,DateRangePicker } from 'react-date-range';
+//import 'react-date-range/dist/styles.css'; // main css file
+//import 'react-date-range/dist/theme/default.css'; // theme css file
+//import { DateRange,DateRangePicker } from 'react-date-range';
 import { addDays } from 'date-fns';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Carros } from './Carros';
 import moment from "moment/moment";
-import { getCarros } from '../Gets';
+import { GetReservaciones, getCarros } from '../Gets';
 import { InfoContext } from '../context';
 
 
@@ -38,6 +38,7 @@ export const Buscar=()=>{
 
   const[formValue,setValue]=useState({frenta:"",fdevolucion:""})
   const{dataCarros,setDacarros}=useContext(InfoContext)    
+  const{reservaciones,setReservaciones}=useContext(InfoContext)
 
   useEffect(()=>{
     registrar();
@@ -63,17 +64,18 @@ export const Buscar=()=>{
 const registrar=async()=>{
     try {
         let dat={frenta:startDate,fdevolucion:endDate,hrenta:dateTime,hdevolucion:dateTime2};
-    dat.hrenta.toJSON=function(){ return moment(this).format(); }
-    dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
-        let res=await fetch('http://localhost:3001/Disponibles',{
-            // return fetch('https://shielded-brushlands-89617.herokuapp.com/Dsponibles',{
+   // let res=await fetch('http://localhost:3001/Disponibles',{
+            let res= fetch('https://shielded-brushlands-89617.herokuapp.com/Disponibles',{
                     method:'POST',
                     mode:'cors',
                     body:JSON.stringify(dat),
                     headers:{'content-type':'application/json'},
                  })
-        .then((res)=>res.json())
-        if(res){setDacarros(res)}
+        .then(res=>res.json())
+        .then(res=>{
+          if(res){setDacarros(res);console.log("res",res)}
+        })
+        
     }catch (error) {
         console.log("err",error)
     }
