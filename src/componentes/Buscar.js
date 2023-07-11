@@ -65,7 +65,7 @@ const registrar=async()=>{
     try {
         let dat={frenta:startDate,fdevolucion:endDate,hrenta:dateTime,hdevolucion:dateTime2};
     let res=await fetch('http://localhost:3001/Disponibles',{
-          //  let res= fetch('https://shielded-brushlands-89617.herokuapp.com/Disponibles',{
+           // let res= fetch('https://shielded-brushlands-89617.herokuapp.com/Disponibles',{
                     method:'POST',
                     mode:'cors',
                     body:JSON.stringify(dat),

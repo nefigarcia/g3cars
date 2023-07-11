@@ -28,7 +28,7 @@ export const Carrosres=(props)=>{
     return(   
     
          <div className="card shadow " >
-            <img   className="card-img-top" />
+            <img src="https://github.com/nefigarcia/g3cars/tree/master/src/Fotos/Duster.jpg"  className="card-img-top" />
             <div className="card-body">
                 <h3 className="card-title text-uppercase">
                    {props.item.Marca}
@@ -77,7 +77,7 @@ export const Carrosres=(props)=>{
         let dat={nombre:nombre,apellido:apellido,email:email,cel:cel,frenta:props.fechas.frenta,fdevolucion:props.fechas.fdevolucion,hrenta:props.fechas.hrenta,hdevolucion:props.fechas.hdevolucion,idcarro:props.item.Id};
        dat.hrenta.toJSON=function(){ return moment(this).format(); }
        dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
-        return fetch('http://localhost:3001/Reservacion',{
+       return fetch('http://localhost:3001/Reservacion',{
        // return fetch('https://shielded-brushlands-89617.herokuapp.com/Reservacion',{
                method:'POST',
                mode:'cors',
@@ -191,7 +191,7 @@ export const Carrosres=(props)=>{
     </Form>
 
     <div className="card shadow " >
-            <img   className="card-img-top" />
+            <img src={props.item.Foto}  className="card-img-top" />
             <div className="card-body">
                 <h3 className="card-title text-uppercase">
                    {props.item.Marca}
