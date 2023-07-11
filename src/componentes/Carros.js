@@ -28,7 +28,7 @@ export const Carrosres=(props)=>{
     return(   
     
          <div className="card shadow " >
-            <img src="https://github.com/nefigarcia/g3cars/tree/master/src/Fotos/Duster.jpg"  className="card-img-top" />
+            <img src={props.item.Foto} />
             <div className="card-body">
                 <h3 className="card-title text-uppercase">
                    {props.item.Marca}
