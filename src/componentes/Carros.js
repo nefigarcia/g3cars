@@ -84,9 +84,10 @@ export const Carrosres=(props)=>{
                body:JSON.stringify(dat),
                headers:{'content-type':'application/json'},
             })
-            .then(res=>{
-              setReservaciones(getReservaciones())
+            .then(res=>{console.log("getRser",getReservaciones())
+              
               if(res.ok){
+                getReservaciones().then(data=>setReservaciones(data))
                 setValue({submitted:true});
                 setLoading(false);
               }
