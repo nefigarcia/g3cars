@@ -84,7 +84,7 @@ const NavApp = (props) => {
                 <Link><NavLink><i className='icon'><FaAddressBook/>Reportes</i></NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><i className='icon'><FaArchive/>Graficas</i></NavLink></Link>
+                <Link to={'/Graficas'}><NavLink><i className='icon'><FaArchive/>Graficas</i></NavLink></Link>
               </NavItem>
             </Nav>
           </Collapse>

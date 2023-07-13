@@ -5,6 +5,7 @@ import React  from 'react';
 import { Routes,Route } from 'react-router-dom';
 import { Inicio } from './Paginas/Inicio';
 import Calendario from './Paginas/Calendario';
+import Graficas from './Paginas/Graficas';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Routes>
       <Route exact path='/' element={<Inicio/>} />
       <Route exact path='/Calendario' element={<Calendario/>} />
+      <Route exact path='/Graficas' element={<Graficas/>} />
 
       </Routes>
     </div>
