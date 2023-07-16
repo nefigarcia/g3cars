@@ -51,4 +51,9 @@
 .rdrMonthAndYearWrapper{
   display: none;
 }
- 
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container 
+.containerDate{
+  width: 55%;
+}

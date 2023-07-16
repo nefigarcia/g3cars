@@ -1,5 +1,5 @@
 import React,{useContext, useState, useEffect} from 'react'
-import {Col, Row,Form,FormFeedback,FormGroup,FormText, Label,Input,Button,Alert, Jumbotron} from 'reactstrap';
+import {Container, Col, Row,Form,FormFeedback,FormGroup,FormText, Label,Input,Button,Alert, Jumbotron} from 'reactstrap';
 //import 'react-date-range/dist/styles.css'; // main css file
 //import 'react-date-range/dist/theme/default.css'; // theme css file
 //import { DateRange,DateRangePicker } from 'react-date-range';
@@ -10,6 +10,11 @@ import { Carros } from './Carros';
 import moment from "moment/moment";
 import { GetReservaciones, getCarros } from '../Gets';
 import { InfoContext } from '../context';
+import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import 'react-datepicker/dist/react-datepicker.css';
+
+
+
 
 
 //import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -66,8 +71,8 @@ const registrar=async()=>{
   var fdevolucion=moment(startDate).format("YYYY-MM-DD")
     try {
         let dat={frenta:frenta,fdevolucion:fdevolucion,hrenta:dateTime,hdevolucion:dateTime2};
-   // let res=await fetch('http://localhost:3001/Disponibles',{
-            let res= fetch('https://shielded-brushlands-89617.herokuapp.com/Disponibles',{
+    let res=await fetch('http://localhost:3001/Disponibles',{
+         //   let res= fetch('https://shielded-brushlands-89617.herokuapp.com/Disponibles',{
                     method:'POST',
                     mode:'cors',
                     body:JSON.stringify(dat),
@@ -95,11 +100,10 @@ const ocultarCalendario=item=>{
 }
     return(
      <div className='div-center'>
-           <Form className='login-form border' onSubmit={(e) =>handleSubmit(e)}>
-             <Row>
-             <FormGroup>
-              <Label>Fecha Renta-Entrega</Label>
-            </FormGroup>
+           <Form className='login-form ' onSubmit={(e) =>handleSubmit(e)}>
+             <Row md={1}>
+              <Col className="bg-light">
+              <Label>Fecha Renta    -    Entrega</Label>
             <DatePicker
       selectsRange={true}
       startDate={startDate}
@@ -107,48 +111,51 @@ const ocultarCalendario=item=>{
       onChange={(update) => {
         setDateRange(update);
       }}
-      isClearable={true}
+      isClearable={false}
     />
+              </Col>
+            
 
-             </Row>          
-             <Row>
-    <Col md={5}>
-      <FormGroup>
+             </Row>        
+      <Row md={2}>  
+        <Col className="bg-light">
         <Label for="Nombre">
-          Hora renta
+          Renta
         </Label>
-        <DatePicker
-            selected={dateTime}
-            onChange={(date) => {
-                setDateTime(date )}}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={30}
-            timeCaption="Hora"
-            dateFormat="h:mm aa"
-    />
-      </FormGroup>
-    </Col>
-    <Col md={5}>
-      <FormGroup>
-      <Label for="Nombre">
+        <FormGroup>   
+       <DatePicker className='react-datepicker__input-container'
+           selected={dateTime}
+           onChange={(date) => {
+               setDateTime(date )}}
+           showTimeSelect
+           showTimeSelectOnly
+           timeIntervals={60}
+           timeCaption="Hora"
+           dateFormat="h:mm aa"
+   />
+     </FormGroup>
+        </Col>    
+        <Col className="bg-light">
+        <Label for="Nombre">
           Devolucion
         </Label>
-        <DatePicker
-            selected={dateTime2}
-            onChange={(date) =>{
+        <FormGroup>
+     <DatePicker className='react-datepicker__input-container'
+           selected={dateTime2}
+           onChange={(date) =>{
 
-                setDateTime2(date)}
-            } 
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={30}
-            timeCaption="Hora"
-            dateFormat="h:mm aa"
-    />
-      </FormGroup>
-    </Col>
-  </Row>  
+               setDateTime2(date)}
+           } 
+           showTimeSelect
+           showTimeSelectOnly
+           timeIntervals={30}
+           timeCaption="Hora"
+           dateFormat="h:mm aa"
+   />
+     </FormGroup>
+        </Col> 
+    </Row> 
+    
   <div className='d-grid'><button className="btn-md btn btn-primary">Buscar</button></div>
           </Form>
 

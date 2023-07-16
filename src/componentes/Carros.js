@@ -77,8 +77,8 @@ export const Carrosres=(props)=>{
         let dat={nombre:nombre,apellido:apellido,email:email,cel:cel,frenta:props.fechas.frenta,fdevolucion:props.fechas.fdevolucion,hrenta:props.fechas.hrenta,hdevolucion:props.fechas.hdevolucion,idcarro:props.item.Id};
        dat.hrenta.toJSON=function(){ return moment(this).format(); }
        dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
-      // return fetch('http://localhost:3001/Reservacion',{
-        return fetch('https://shielded-brushlands-89617.herokuapp.com/Reservacion',{
+       return fetch('http://localhost:3001/Reservacion',{
+       // return fetch('https://shielded-brushlands-89617.herokuapp.com/Reservacion',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),
@@ -121,17 +121,31 @@ export const Carrosres=(props)=>{
 
 
     return (
-      <div>
-        <Button color="danger" onClick={toggle}>
-          Reservar
+      <div><i>$</i>
+        <Row md={1}>
+          <Col>
+          
+          <Button color="danger" onClick={toggle}>
+           Mostrador
         </Button>
+          </Col>
+        </Row><i>$</i>
+        <Row md={1}>
+          <Col>
+          <Button >
+          Prepagado 
+        </Button>
+          </Col>
+        </Row>
+       
+        
         <Modal isOpen={modal} toggle={toggle} onClosed={()=>setValue({submitted:false})}>
           <ModalHeader toggle={toggle}>Detalles de reserva</ModalHeader>
           <ModalBody>
 
           <div className=" div-center">
     <h1><span className='text-center'>Registro</span></h1>
-    <Form className="border signup-form" onSubmit={(e) => handleSubmit(e)}>
+    <Form className=" signup-form" onSubmit={(e) => handleSubmit(e)}>
     <FormGroup>
         <Input
           type="name"
@@ -200,14 +214,14 @@ export const Carrosres=(props)=>{
                 <p className="card-text">{props.item.Modelo}</p>
                 <p className="card-text">Transmision {props.item.Transmision}</p>
                 <p className="card-text fa fa-usd">Puertas {props.item.Puertas}</p>
-                <Row>
-                    <Col sm={4}><Label>Fecha renta:{moment(props.fechas.frenta).format('DD-MM-YYYY')}</Label></Col>
-                    <Col sm={4}><Label>Fecha devolucion:{moment(props.fechas.fdevolucion).format('DD-MM-YYYY')}</Label></Col>
+                <Row sm={2}>
+                    <Col><Label>Fecha renta:{moment(props.fechas.frenta).format('DD-MM-YYYY')}</Label></Col>
+                    <Col ><Label>Fecha devolucion:{moment(props.fechas.fdevolucion).format('DD-MM-YYYY')}</Label></Col>
 
                 </Row>
-                <Row>
-                    <Col sm={4}><Label>Hora renta:{moment(props.fechas.hrenta).format('hh:mm')}</Label></Col>
-                    <Col sm={4}><Label>Hora devolucion:{moment(props.fechas.hdevolucion).format('hh:mm')}</Label></Col>
+                <Row md={2}>
+                    <Col ><Label>Hora renta:{moment(props.fechas.hrenta).format('hh:mm')}</Label></Col>
+                    <Col ><Label>Hora devolucion:{moment(props.fechas.hdevolucion).format('hh:mm')}</Label></Col>
 
                 </Row>
 

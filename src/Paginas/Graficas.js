@@ -70,8 +70,8 @@ const Graficas =()=> {
     var rfinal=moment(endMes).format("YYYY-MM-DD")
       try {
           let dat={rinicio:rinicio,rfinal:rfinal};
-     // let res=await fetch('http://localhost:3001/Reporte',{
-              let res= await fetch('https://shielded-brushlands-89617.herokuapp.com/Reporte',{
+      let res=await fetch('http://localhost:3001/Reporte',{
+           //   let res= await fetch('https://shielded-brushlands-89617.herokuapp.com/Reporte',{
                       method:'POST',
                       mode:'cors',
                       body:JSON.stringify(dat),

@@ -21,6 +21,7 @@ const localizer = dateFnsLocalizer({
 
 export default function Calendario() {
     const{reservaciones}=useContext(InfoContext)
+    console.log("calDate",new Date())
   const re=  reservaciones.map(item=>{
      return   {start:item.FechaRenta,end:item.FechaDevolucion,title:item.Modelo}
     });console.log("ma",re)
