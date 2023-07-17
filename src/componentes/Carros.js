@@ -74,8 +74,14 @@ export const Carrosres=(props)=>{
   
 
     function registrar(){
-        let dat={nombre:nombre,apellido:apellido,email:email,cel:cel,frenta:props.fechas.frenta,fdevolucion:props.fechas.fdevolucion,hrenta:props.fechas.hrenta,hdevolucion:props.fechas.hdevolucion,idcarro:props.item.Id};
-       dat.hrenta.toJSON=function(){ return moment(this).format(); }
+    var dtrenta=new Date(props.fechas.frenta.getFullYear(),props.fechas.frenta.getMonth(),props.fechas.frenta.getDate(),props.fechas.hrenta.getHours(),props.fechas.hrenta.getMinutes());     
+    var dtdevolucion=new Date(props.fechas.fdevolucion.getFullYear(),props.fechas.fdevolucion.getMonth(),props.fechas.fdevolucion.getDate(),props.fechas.hdevolucion.getHours(),props.fechas.hdevolucion.getMinutes());     
+ 
+    let dat={nombre:nombre,apellido:apellido,email:email,cel:cel,frenta:dtrenta,fdevolucion:dtdevolucion,hrenta:props.fechas.hrenta,hdevolucion:props.fechas.hdevolucion,idcarro:props.item.Id};
+      dat.frenta.toJSON=function(){return moment(this).format();}
+      dat.fdevolucion.toJSON=function(){return moment(this).format();}
+
+        dat.hrenta.toJSON=function(){ return moment(this).format(); }
        dat.hdevolucion.toJSON=function(){ return moment(this).format(); }
        return fetch('http://localhost:3001/Reservacion',{
        // return fetch('https://shielded-brushlands-89617.herokuapp.com/Reservacion',{
@@ -84,8 +90,7 @@ export const Carrosres=(props)=>{
                body:JSON.stringify(dat),
                headers:{'content-type':'application/json'},
             })
-            .then(res=>{console.log("getRser",getReservaciones())
-              
+            .then(res=>{           
               if(res.ok){
                 getReservaciones().then(data=>setReservaciones(data))
                 setValue({submitted:true});
