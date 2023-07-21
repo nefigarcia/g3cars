@@ -25,6 +25,7 @@ import { getReservaciones } from "../Gets";
     );
  }
 export const Carrosres=(props)=>{
+ 
     return(   
     
          <div className="card shadow " >
@@ -36,7 +37,7 @@ export const Carrosres=(props)=>{
                 <p className="card-text">{props.item.Modelo}</p>
                 <p className="card-text">Transmision {props.item.Transmision}</p>
                 <p className="card-text fa fa-usd">Puertas {props.item.Puertas}</p><br></br>
-                <Reservar fechas={props.fechas}  item={props.item}/>
+                <Reservar fechas={props.fechas} item={props.item}/>
                {/* <Link to='/Details' onClick={()=>value.handleDetail(id)} className="btn btn-primary">
                     Mas Info...
                 </Link>
@@ -57,8 +58,9 @@ export const Carrosres=(props)=>{
     const{nombre,apellido,email,cel,validate,submitted}=formValue;  
     const[validar,setValidar]=useState("")
     const{reservaciones,setReservaciones}=useContext(InfoContext)
-
     const [modal, setModal] = useState(false);
+
+    console.log("precit",props.preciototalmostrador);
     const toggle = () => {
         setModal(!modal);
     }
@@ -72,7 +74,17 @@ export const Carrosres=(props)=>{
         .then(setLoading(true));
     }
   
-
+    var diastotal=(props.fechas.diftime/24);
+    var preciototalmostrador;
+    var preciototalonline;
+    console.log("difdi",diastotal)
+    if(diastotal%1==0){
+      preciototalmostrador=diastotal*750;
+      preciototalonline=diastotal*700;
+    }else{
+      preciototalmostrador= (Math.round(diastotal)+1)*750;
+      preciototalonline=(Math.round(diastotal)+1)*700
+    }
     function registrar(){
     var dtrenta=new Date(props.fechas.frenta.getFullYear(),props.fechas.frenta.getMonth(),props.fechas.frenta.getDate(),props.fechas.hrenta.getHours(),props.fechas.hrenta.getMinutes());     
     var dtdevolucion=new Date(props.fechas.fdevolucion.getFullYear(),props.fechas.fdevolucion.getMonth(),props.fechas.fdevolucion.getDate(),props.fechas.hdevolucion.getHours(),props.fechas.hdevolucion.getMinutes());     
@@ -126,15 +138,14 @@ export const Carrosres=(props)=>{
 
 
     return (
-      <div><i>$</i>
+      <div><i>${preciototalmostrador}</i>
         <Row md={1}>
-          <Col>
-          
+          <Col>      
           <Button color="danger" onClick={toggle}>
            Mostrador
         </Button>
           </Col>
-        </Row><i>$</i>
+        </Row><i>${preciototalonline}</i>
         <Row md={1}>
           <Col>
           <Button >
@@ -219,6 +230,7 @@ export const Carrosres=(props)=>{
                 <p className="card-text">{props.item.Modelo}</p>
                 <p className="card-text">Transmision {props.item.Transmision}</p>
                 <p className="card-text fa fa-usd">Puertas {props.item.Puertas}</p>
+                <i>Servicio: {props.fechas.servicio}</i>
                 <Row sm={2}>
                     <Col><Label>Fecha renta:{moment(props.fechas.frenta).format('DD-MM-YYYY')}</Label></Col>
                     <Col ><Label>Fecha devolucion:{moment(props.fechas.fdevolucion).format('DD-MM-YYYY')}</Label></Col>

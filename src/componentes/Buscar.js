@@ -12,6 +12,8 @@ import { GetReservaciones, getCarros } from '../Gets';
 import { InfoContext } from '../context';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import styled from 'styled-components';
+
 
 
 
@@ -42,37 +44,48 @@ export const Buscar=()=>{
   const [dateTime2, setDateTime2] = useState(new Date());
 
   const[formValue,setValue]=useState({frenta:"",fdevolucion:""})
-  const{dataCarros,setDacarros}=useContext(InfoContext)    
-  const{reservaciones,setReservaciones}=useContext(InfoContext)
+  const{dataCarros,setDacarros,setLoading}=useContext(InfoContext)    
+  const[diftime,setDiftime]=useState("");
+  const[servicio,setServicio]=useState("Renta");
+  const[taxi,setTaxi]=useState("")
+ 
 
   useEffect(()=>{
     registrar();
     
 },[]); 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setValue((prevState) => {
-      return {
-        ...prevState,
-        [name]: value,
-      };
-    });
-  };      
+const handleChange = (event) => {
+  const { name, value } = event.target;
+  setServicio((prevState) => {
+    return {
+      ...prevState,
+      [name]: value,
+    };
+  });
+};   
   function handleSubmit(e){
     e.preventDefault();
     if(!(startDate && endDate && dateTime && dateTime2)){
         return;
     }
     registrar()
-    .then(console.log("bien"));
+    .then(console.log("bien"))
+    .catch(error=>{console.log("eeror",error)})
 }
-const registrar=async()=>{
-  var frenta=moment(startDate).format("YYYY-MM-DD")
-  var fdevolucion=moment(startDate).format("YYYY-MM-DD")
+const registrar=async()=>{ 
+ // var frenta=moment(startDate).format("YYYY-MM-DD")
+ // var fdevolucion=moment(startDate).format("YYYY-MM-DD")
+ var dtrenta=new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate(),dateTime.getHours(),dateTime.getMinutes());     
+ var dtdevolucion=new Date(endDate.getFullYear(),endDate.getMonth(),endDate.getDate(),dateTime2.getHours(),dateTime2.getMinutes());     
+ var diftime=Math.abs(dtrenta - dtdevolucion) / 36e5;
+ setDiftime(diftime);
+ setLoading(true);
     try {
-        let dat={frenta:frenta,fdevolucion:fdevolucion,hrenta:dateTime,hdevolucion:dateTime2};
-    let res=await fetch('http://localhost:3001/Disponibles',{
-         //   let res= fetch('https://shielded-brushlands-89617.herokuapp.com/Disponibles',{
+        let dat={frenta:dtrenta,fdevolucion:dtdevolucion,hrenta:dateTime,hdevolucion:dateTime2};
+        dat.frenta.toJSON=function(){return moment(this).format();}
+        dat.fdevolucion.toJSON=function(){return moment(this).format();}
+        let res=await fetch('http://localhost:3001/Disponibles',{
+      //let res= fetch('https://shielded-brushlands-89617.herokuapp.com/Disponibles',{
                     method:'POST',
                     mode:'cors',
                     body:JSON.stringify(dat),
@@ -80,7 +93,9 @@ const registrar=async()=>{
                  })
         .then(res=>res.json())
         .then(res=>{
-          if(res){setDacarros(res);console.log("res",res)}
+          if(res){setDacarros(res);
+          setLoading(false);
+        }
         })
         
     }catch (error) {
@@ -99,12 +114,58 @@ const ocultarCalendario=item=>{
     }
 }
     return(
-     <div className='div-center'>
+     <div className='div-center'>{console.log("serv",servicio)}
            <Form className='login-form ' onSubmit={(e) =>handleSubmit(e)}>
+             <Row >
+              <Col className="bg-light">
+                 <FormGroup div-center>
+                 <Label for="tipo">
+                 Elige tu servicio
+                   </Label>
+                 <Input className='w-50 div-center login-form' 
+                 id="servicio"
+                  name="servicio"
+                type="select"
+                value={servicio}
+                onChange={e=>setServicio(e.target.value)}
+                 >
+                  <option>Renta</option>
+                  <option>Taxi</option>
+                  <option>Viaje con conductor</option>
+               </Input>
+                </FormGroup>
+              </Col>
+             </Row>
+           {servicio==="Taxi" ?
+            <>
+            <Row md={1}>
+              <Col className="bg-light">
+                 <FormGroup>
+                 <Label for="servicio">
+                 Destinos taxi.
+                   </Label>
+                 <Input 
+                 id="taxi"
+                  name="taxi"
+                type="select"
+                value={taxi.aeropuerto}
+                onChange={e=>setTaxi(e.target.value)}
+                 >
+                  <option>Aeropuerto Cancun/Playa del Carmen</option>
+                  <option>Playa del Carmen/Aeropuerto Cancun</option>
+               </Input>
+                </FormGroup>
+              </Col>
+             </Row>   
+            </> : null
+           } 
+               
+
              <Row md={1}>
               <Col className="bg-light">
               <Label>Fecha Renta    -    Entrega</Label>
-            <DatePicker
+              <FormGroup>
+              <DatePicker 
       selectsRange={true}
       startDate={startDate}
       endDate={endDate}
@@ -112,10 +173,12 @@ const ocultarCalendario=item=>{
         setDateRange(update);
       }}
       isClearable={false}
+      onKeyDown={(event) => {
+        event.preventDefault();
+      }}
     />
+              </FormGroup> 
               </Col>
-            
-
              </Row>        
       <Row md={2}>  
         <Col className="bg-light">
@@ -132,6 +195,9 @@ const ocultarCalendario=item=>{
            timeIntervals={60}
            timeCaption="Hora"
            dateFormat="h:mm aa"
+           onKeyDown={(event) => {
+            event.preventDefault();
+          }}
    />
      </FormGroup>
         </Col>    
@@ -155,8 +221,11 @@ const ocultarCalendario=item=>{
      </FormGroup>
         </Col> 
     </Row> 
-    
-  <div className='d-grid'><button className="btn-md btn btn-primary">Buscar</button></div>
+    <Row >
+      <Col>    
+      <div className='d-grid'><button className="btn-md btn btn-primary">Buscar</button></div>
+      </Col>
+    </Row>
           </Form>
 
         {/*  <DateRange 
@@ -172,8 +241,44 @@ const ocultarCalendario=item=>{
         <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} />
       </DemoContainer>
     </LocalizationProvider>*/}
-         <Carros fechas={{frenta:startDate,fdevolucion:endDate,hrenta:dateTime,hdevolucion:dateTime2}}/>
+    <Loading />
+         <Carros fechas={{frenta:startDate,fdevolucion:endDate,hrenta:dateTime,hdevolucion:dateTime2,diftime:diftime,servicio:servicio}}/>
 
      </div>
     );
 }
+
+export const Loading=()=>{
+  const{loading}=useContext(InfoContext)    
+
+  return(
+    <React.Fragment>
+    <Header hidden={!loading} className="container-fluid align-items-center">
+  <div className="loader-cont" >
+      <div className="loader"></div>
+  </div>
+  </Header>
+  </React.Fragment>
+  );
+}
+
+const Header=styled.header`
+.loader {
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin-left:-50px;
+  margin-top:-50px;
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0%  { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+`

@@ -30,6 +30,7 @@ import {
   Button,
   List
 } from 'reactstrap';
+import { InfoContext } from '../context';
 
 const NavApp = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +38,7 @@ const NavApp = (props) => {
 
   const [collapsedd, setCollapsedd] = useState(false);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
+  const{authen}=useContext(InfoContext);
 //const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoContext);
      
         return(
@@ -45,7 +47,7 @@ const NavApp = (props) => {
           <NavbarBrand  href="/">G3cars</NavbarBrand>
           <Nav>
             <Link to="/Login">
-            <Button  outline color="primary">Login</Button>{' '}
+            <Button hidden={authen} outline color="primary">Login</Button>{' '}
             </Link>
             
               
@@ -73,7 +75,7 @@ const NavApp = (props) => {
         
   
           <Nav className="container-fluid">
-          <NavbarToggler  className="me-2" onClick={toggle} />
+          <NavbarToggler hidden={!authen} className="me-2" onClick={toggle} />
           </Nav>
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >

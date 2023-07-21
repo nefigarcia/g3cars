@@ -6,13 +6,17 @@ export const InfoProvider=props=>{
     const [dataCarros,setDacarros]=useState([])
     const [reservaciones,setReservaciones]=useState([])
     const [reporte,setReporte]=useState([])
+    const [loading,setLoading]=useState(false)
+    const [authen,setAuthen]=useState(false)
 
     return(
         <InfoContext.Provider
         value={{
             dataCarros,setDacarros,
             reservaciones,setReservaciones,
-            reporte,setReporte
+            reporte,setReporte,
+            loading,setLoading,
+            authen,setAuthen
         }}
         >
             {props.children}
